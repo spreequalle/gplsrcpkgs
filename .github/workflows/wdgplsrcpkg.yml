@@ -1,0 +1,25 @@
+name: WD GPL Firmware
+
+on:
+  workflow_dispatch:
+    inputs:
+      gpl_src_pkg:
+        description: 'GPL Source Package'
+        required: true
+        type: string
+        default: 'WDMyCloud_Mirror_GPL_v2.21.126_20161110.tar.gz'
+
+jobs:
+
+  get:
+    runs-on: ubuntu-latest
+    steps:
+    - name: pull
+      uses: actions/checkout@v4
+
+    - name: get package content
+      if: endsWith(inputs.gpl_src_pkg, '.tar.gz')
+      run: curl "https://downloads.wdc.com/gpl/${{ inputs.gpl_src_pkg }}" | tar tz > "${{ inputs.gpl_src_pkg }}.txt"
+
+    - name: push
+      uses: stefanzweifel/git-auto-commit-action@v5
